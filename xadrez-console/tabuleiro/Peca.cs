@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using tabuleiro;
 
-namespace xadrez_console.tabuleiro
+namespace tabuleiro
 {
-    internal class Peca
+     class Peca
     {
         public Posicao posicao { get; set; }
         public Cor cor { get; protected set; }
