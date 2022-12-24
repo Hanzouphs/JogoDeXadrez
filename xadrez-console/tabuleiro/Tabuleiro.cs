@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace tabuleiro
 {
      class Tabuleiro
@@ -22,6 +23,12 @@ namespace tabuleiro
         public Peca peca(int linhas, int colunas)
         {
             return pecas[linhas, colunas];  
+        }
+
+        public void colocarPeca(Peca p, Posicao pos)
+        {
+            pecas[pos.linha, pos.coluna] = p;
+            p.posicao =pos;
         }
     }
 }
