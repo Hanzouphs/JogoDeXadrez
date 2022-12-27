@@ -2,7 +2,7 @@
 
 namespace xadrez
 {
-    internal class Rei : Peca
+     class Rei : Peca
     {
         public Rei(Tabuleiro tab, Cor cor) : base(tab, cor) { 
 
@@ -15,7 +15,7 @@ namespace xadrez
 
         private bool podeMover(Posicao pos)
         {
-            Peca p =tab.peca(pos);
+            Peca p = tab.peca(pos);
             return p == null || p.cor != cor;
         }
         public override bool[,] movimentosPossiveis()
