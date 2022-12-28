@@ -2,6 +2,7 @@
 using tabuleiro;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net.Http.Headers;
 
 namespace xadrez
 {
@@ -28,7 +29,7 @@ namespace xadrez
 
         }
 
-        public Peca exectuaMoviemento(Posicao origem, Posicao destino)
+        public Peca executaMovimento(Posicao origem, Posicao destino)
         {
             Peca p = tab.retirarPeca(origem);
             p.incrementarQteMovimentos();
@@ -82,7 +83,7 @@ namespace xadrez
 
         public void realizaJogada(Posicao origem, Posicao destino)
         {
-            Peca pecaCapturada = exectuaMoviemento(origem, destino);
+            Peca pecaCapturada = executaMovimento(origem, destino);
 
             if (estaEmxeque(jogadorAtual))
             {
@@ -99,9 +100,17 @@ namespace xadrez
                 xeque= false;   
             }
 
+            if (testeXequemate(adversaria(jogadorAtual)))
+            {
+                terminada = true;
+            }
+            else
+            {
+                turno++;
+                mudaJogador();
+            }
 
-            turno++;
-            mudaJogador();
+            
         }
 
         private void mudaJogador()
@@ -170,6 +179,38 @@ namespace xadrez
                 }
             }
             return false;
+        }
+
+        public bool testeXequemate(Cor cor)
+        {
+            if (!estaEmxeque(cor))
+            {
+                return false;
+            }
+
+            foreach (Peca x in pecasEmJogo(cor))
+            {
+                bool[,] mat = x.movimentosPossiveis();
+                for (int i=0; i<tab.linhas; i++)
+                {
+                    for (int j=0; j<tab.colunas; j++)
+                    {
+                        if (mat[i, j]) {
+
+                            Posicao origem = x.posicao;
+                            Posicao destino = new Posicao(i, j);
+                            Peca pecaCapturada = executaMovimento(x.posicao, destino);
+                            bool testeXeque = estaEmxeque(cor);
+                            desfazMovimento(origem, destino, pecaCapturada);
+                            if(!testeXeque)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
         }
 
         public HashSet<Peca> pecasEmJogo(Cor cor)
